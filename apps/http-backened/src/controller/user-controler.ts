@@ -1,13 +1,12 @@
 import { asyncHandler } from "../helper/async-handler";
 import { NextFunction, Request, Response } from "express"
-import { UserModel } from "../models/user-model";
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from "@repo/backened-common/src/config";
-import { UserSchema } from "@repo/common/src/type";
-
+import { JWT_SECRET } from "@repo/backened-common/index";
+import {prismaClient} from "@repo/db/client";
+import { CreateUserSchema, SigninSchema, CreateRoomSchema } from "@repo/common/index";
 const signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const {name, email, password} = req.body;
-    UserSchema.parse({name, email, password});
+    const {name, email, password, phone, photo} = req.body;
+    CreateUserSchema.parse({name, email, password});
 
     if(!name || !email || !password){
         return next(new Error('Invalid name, email or password'));
@@ -15,18 +14,26 @@ const signUp = asyncHandler(async (req: Request, res: Response, next: NextFuncti
 
     
 
-    const user = await UserModel.findOne({email});
+    const user = await prismaClient.user.findUnique({where: {email}});
 
     if(user){
         return next(new Error('User already exists'));
     }
 
-    const newUser = await UserModel.create({name, email, password});
+    const newUser = await prismaClient.user.create({data: {name, email, password, phone, photo}});
 
-    res.json({
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email
+    console.log(newUser);
+
+    const hashtoken = jwt.sign({id: newUser.id}, JWT_SECRET, {expiresIn: '1h'});
+
+    res.status(200).json({
+        message: "Signup Success",
+        token: hashtoken,
+        user: {
+            name: newUser.name,
+            email: newUser.email,
+            id: newUser.id,
+        }
     })
 })
 
@@ -37,7 +44,7 @@ const signIn = asyncHandler(async (req: Request, res: Response, next: NextFuncti
     return next(new Error('Invalid email or password'));
    } 
 
-   const user = await UserModel.findOne({email});
+   const user = await prismaClient.user.findUnique({where: {email}});
 
    if(!user){
     return next(new Error('User not found'));
@@ -47,11 +54,10 @@ const signIn = asyncHandler(async (req: Request, res: Response, next: NextFuncti
     return next(new Error('Invalid password'));
    }
 
-   const hashtoken = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '1h'});
-
+   const hashtoken = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
 
    res.json({
-    id: user._id,
+    id: user.id,
     name: user.name,
     email: user.email
 
