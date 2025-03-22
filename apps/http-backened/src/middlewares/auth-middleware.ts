@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { JWT_SECRET } from "../config/config";
+import { JWT_SECRET } from "@repo/backened-common/src/config";
 import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {

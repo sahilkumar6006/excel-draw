@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@repo/common": "workspace:*",
+    "@repo/backened-common": "workspace:*",
     "@types/express": "^5.0.0"
   },
   "keywords": [],

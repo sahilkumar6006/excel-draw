@@ -14,8 +14,11 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/ws": "^8.5.13"
+    "@types/ws": "^8.5.13",
+    "@repo/backened-common": "workspace:*",
+    "@repo/common": "workspace:*"
   },
+ 
   "keywords": [],
   "author": "",
   "license": "ISC",

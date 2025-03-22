@@ -2,10 +2,12 @@ import { asyncHandler } from "../helper/async-handler";
 import { NextFunction, Request, Response } from "express"
 import { UserModel } from "../models/user-model";
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from "../config/config";
+import { JWT_SECRET } from "@repo/backened-common/src/config";
+import { UserSchema } from "@repo/common/src/type";
 
 const signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const {name, email, password} = req.body;
+    UserSchema.parse({name, email, password});
 
     if(!name || !email || !password){
         return next(new Error('Invalid name, email or password'));
