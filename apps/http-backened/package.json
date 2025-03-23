@@ -17,10 +17,10 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@repo/commoxzxzzn": "workspace:*",
     "@types/express": "^5.0.0",
     "@repo/db": "workspace:*",
-    "@repo/backened-common": "workspace:*"
+    "@repo/backened-common": "workspace:*",
+    "@repo/common": "workspace:*"
   },
   "keywords": [],
   "author": "",

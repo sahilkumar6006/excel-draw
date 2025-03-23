@@ -1,13 +1,16 @@
 import { asyncHandler } from "../helper/async-handler";
 import { NextFunction, Request, Response } from "express"
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from "@repo/backened-common/index";
 import {prismaClient} from "@repo/db/client";
-import { CreateUserSchema, SigninSchema, CreateRoomSchema } from "@repo/common/index";
+import { JWT_SECRET } from "@repo/backened-common/config";
+import {CreateUserSchema} from "@repo/common/types";
+
+
 const signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const {name, email, password, phone, photo} = req.body;
-    CreateUserSchema.parse({name, email, password});
 
+    CreateUserSchema.parse({name, email, password, phone, photo});
+    
     if(!name || !email || !password){
         return next(new Error('Invalid name, email or password'));
     }
