@@ -2,6 +2,7 @@ import { asyncHandler } from "../helper/async-handler";
 import { NextFunction, Request, Response } from "express";
 import {CreateUserSchema, SigninSchema} from "@repo/common/types";
 import {prismaClient} from "@repo/db/client";
+import jwt from "jsonwebtoken";
 
 const signIn = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const parsedData = SigninSchema.safeParse(req.body);
@@ -25,12 +26,15 @@ const signIn = asyncHandler(async (req: Request, res: Response, next: NextFuncti
         return next(new Error("Invalid password"));
     }
 
+    const token = jwt.sign({ id: user.id }, "secret");
+
     res.json({
         id: user.id,
         email: user.email,
         name: user.name,
         phone: user.phone,
-        photo: user.photo
+        photo: user.photo,
+        token
     });
 });
 
