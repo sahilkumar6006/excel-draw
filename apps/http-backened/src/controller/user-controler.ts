@@ -1,76 +1,64 @@
 import { asyncHandler } from "../helper/async-handler";
-import { NextFunction, Request, Response } from "express"
-import jwt from 'jsonwebtoken';
+import { NextFunction, Request, Response } from "express";
+import {CreateUserSchema, SigninSchema} from "@repo/common/types";
 import {prismaClient} from "@repo/db/client";
-import { JWT_SECRET } from "@repo/backened-common/config";
-import {CreateUserSchema} from "@repo/common/types";
-
-
-const signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const {name, email, password, phone, photo} = req.body;
-
-    CreateUserSchema.parse({name, email, password, phone, photo});
-    
-    if(!name || !email || !password){
-        return next(new Error('Invalid name, email or password'));
-    }
-
-    
-
-    const user = await prismaClient.user.findUnique({where: {email}});
-
-    if(user){
-        return next(new Error('User already exists'));
-    }
-
-    const newUser = await prismaClient.user.create({data: {name, email, password, phone, photo}});
-
-    console.log(newUser);
-
-    const hashtoken = jwt.sign({id: newUser.id}, JWT_SECRET, {expiresIn: '1h'});
-
-    res.status(200).json({
-        message: "Signup Success",
-        token: hashtoken,
-        user: {
-            name: newUser.name,
-            email: newUser.email,
-            id: newUser.id,
-        }
-    })
-})
 
 const signIn = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-   const {email, password} = req.body;
+    const parsedData = SigninSchema.safeParse(req.body);
+    if (!parsedData.success) {
+        return next(new Error(parsedData.error.message));
+    }
 
-   if(!email || !password){
-    return next(new Error('Invalid email or password'));
-   } 
+    const { email, password } = parsedData.data;
 
-   const user = await prismaClient.user.findUnique({where: {email}});
+    const user = await prismaClient.user.findUnique({
+        where: {
+            email
+        }
+    });
 
-   if(!user){
-    return next(new Error('User not found'));
-   }
+    if (!user) {
+        return next(new Error("User not found"));
+    }
 
-   if(user.password !== password){
-    return next(new Error('Invalid password'));
-   }
+    if (user.password !== password) {
+        return next(new Error("Invalid password"));
+    }
 
-   const hashtoken = jwt.sign({id: user.id}, JWT_SECRET, {expiresIn: '1h'});
+    res.json({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        photo: user.photo
+    });
+});
 
-   res.json({
-    id: user.id,
-    name: user.name,
-    email: user.email
+const signUp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const parsedData = CreateUserSchema.safeParse(req.body);
+    if (!parsedData.success) {
+        return next(new Error(parsedData.error.message));
+    }
 
-   })
-})
+    const { password, email, name, phone, photo } = parsedData.data;
 
+    const user = await prismaClient.user.create({
+        data: {
+            password,
+            email,
+            name,
+            phone: phone || '',
+            photo: photo || ''
+        }
+    })
 
+    res.json({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        photo: user.photo
+    })
+});
 
-export const UserController = {
-    signUp,
-    signIn,
-    
-}
+export { signUp, signIn }
