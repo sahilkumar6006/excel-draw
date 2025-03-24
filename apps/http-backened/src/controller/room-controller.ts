@@ -38,7 +38,7 @@ export const createRoom = async (req: Request, res: Response, next: NextFunction
         });
 
         res.json({
-            roomId: room.id,
+            roomId: room.id.toString(),
             slug: room.slug
         });
     } catch (error) {
@@ -54,7 +54,7 @@ export const getChat = async (req: Request, res: Response, next: NextFunction): 
         console.log(req.params.roomId);
         const messages = await prismaClient.chat.findMany({
             where: {
-                roomId: roomId
+                roomId: roomId.toString()
             },
             orderBy: {
                 id: "desc"
@@ -85,7 +85,7 @@ export const getSlug = async (req: Request, res: Response, next: NextFunction): 
     })
     
     res.json({
-        roomId: room?.id,
+        roomId: room?.id.toString(),
         slug: room?.slug
     })
 }
