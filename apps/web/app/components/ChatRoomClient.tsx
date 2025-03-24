@@ -8,16 +8,16 @@ function ChatRoomClient({messages}:{
     const [chat, setChat] = React.useState({messages: messages.messages});
     const { loading, socket } = useSocket();
 
-    useEffect(() => {
-        if (socket && !loading) {
-           socket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            if(message.type === 'chat') {
-                setChat(c => ({messages: [...c.messages, message]}))
-            }
-           }
-        }
-    }, [socket, loading]);
+    // useEffect(() => {
+    //     if (socket && !loading) {
+    //        socket.onmessage = (event) => {
+    //         const message = JSON.parse(event.data);
+    //         if(message.type === 'chat') {
+    //             setChat(c => ({messages: [...c.messages, message]}))
+    //         }
+    //        }
+    //     }
+    // }, [socket, loading]);
     return (
         <div>
             <h1>ChatRoomClient</h1>
