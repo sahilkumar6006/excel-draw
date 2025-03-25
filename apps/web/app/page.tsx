@@ -9,7 +9,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="flex flex-col gap-4">
         <input type="text" placeholder="Room Id" value={roomId} onChange={(e) => setRoomId(e.target.value)} className="border border-gray-300 rounded px-4 py-2" />
-        <button onClick={() => router.push(`/room/${roomId}`)}>Enter</button>
+        <button onClick={() => router.push(`/room/${roomId || 'default'}`)}>Enter</button>
       </div>
     </div>
   );

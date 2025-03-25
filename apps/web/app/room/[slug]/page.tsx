@@ -5,6 +5,7 @@ import { BACKEND_URL } from "../../config";
 async function fetchRoom(slug: string) {
   const response = await fetch(`${BACKEND_URL}/api/v1/rooms/${slug}`);
   const data = await response.json();
+  console.log(data);
   return data;
 }
   
