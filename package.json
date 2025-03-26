@@ -1,5 +1,5 @@
 {
-  "name": "draw-app",
+  "name": "@repo/ui",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -7,6 +7,11 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
+  },
+  "exports": {
+    "./button": "./src/button.tsx",
+    "./card": "./src/card.tsx",
+    "./code": "./src/code.tsx"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
