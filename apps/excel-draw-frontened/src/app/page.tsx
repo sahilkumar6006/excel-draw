@@ -1,5 +1,5 @@
 import { Button } from "@repo/ui/button";
-import { Card } from "@repo/ui/card";
+import { Card } from "@repo/ui/Card";
 import { Pencil, Share2, Users2, Sparkles, Github, Download } from "lucide-react";
 import Link from "next/link";
 
