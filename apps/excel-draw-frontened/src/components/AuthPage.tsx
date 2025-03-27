@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { request } from '@/api';
 
 export function AuthPage({isSignin}: {
     isSignin: boolean
@@ -8,30 +9,24 @@ export function AuthPage({isSignin}: {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to authenticate');
+      const endpoint = isSignin ? '/user/sign-in' : '/user/sign-up';
+      const response = await request.post(endpoint, { email, password });
+      
+      if (!response.data) {
+        throw new Error(`Failed to ${isSignin ? 'authenticate' : 'register'}`);
       }
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem('token', data.token);
+      
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
         router.push('/');
       }
     } catch (error) {
-      console.error('Error during authentication:', error);
+      console.error(`Error during ${isSignin ? 'authentication' : 'registration'}:`, error);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-900 to-red">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

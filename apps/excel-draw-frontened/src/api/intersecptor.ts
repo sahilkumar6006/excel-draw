@@ -1,3 +1,1 @@
-import { httpService } from "@/api/httpService";
-
-httpService
+import axios, {AxiosInstance, AxiosError} from 'axios';
