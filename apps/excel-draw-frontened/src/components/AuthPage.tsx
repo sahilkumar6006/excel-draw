@@ -12,7 +12,7 @@ export function AuthPage({isSignin}: {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const endpoint = isSignin ? '/user/sign-in' : '/user/sign-up';
+      const endpoint = isSignin ? 'http://localhost:3002/api/v1/user/sign-in' : 'http://localhost:3002/api/v1/user/sign-up';
       const response = await request.post(endpoint, { email, password });
       
       if (!response.data) {
