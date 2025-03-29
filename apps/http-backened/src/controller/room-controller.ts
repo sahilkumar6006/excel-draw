@@ -9,7 +9,6 @@ type RequestWithUser = Request & {
   } 
 };
 
-// Create a simple handler function without asyncHandler
 export const createRoom = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         console.log("Request body:", req.body);

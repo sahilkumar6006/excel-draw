@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { request } from '@/api';
 import { BACKENED_URL } from '@/config';
 import axios from 'axios';
 export function AuthPage({isSignin}: {
