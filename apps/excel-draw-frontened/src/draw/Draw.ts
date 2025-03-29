@@ -29,7 +29,7 @@ declare global {
 export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
     const ctx = canvas.getContext("2d");
     
-    let existingShapes: Shapes[] = await getExistingShapes(roomId);
+    const existingShapes: Shapes[] = await getExistingShapes(roomId);
     
     if (!ctx) {
         return;
@@ -160,7 +160,7 @@ export async function clearCanvas(existingShapes: Shapes[], canvas: HTMLCanvasEl
 } 
 
 export async function getExistingShapes(roomId: string): Promise<Shapes[]> {
-    const response = await fetch(`${BACKENED_URL}/api/v1/room/chats/${roomId}/`);
+    const response = await fetch(`${BACKENED_URL}/room/chats/${roomId}/`);
     const messages = await response.json();
     
     const shapes = messages.map((x: {message: string}) => {
