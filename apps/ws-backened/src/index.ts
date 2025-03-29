@@ -1,14 +1,14 @@
 import { WebSocketServer,WebSocket } from 'ws';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { JWT_SECRET } from "@repo/backened-common/config";
-const wss = new WebSocketServer({port: 8083})
+const wss = new WebSocketServer({port: 8084})
 import { prismaClient } from "@repo/db/client";
 
 interface User {
     userId: string;
     ws: WebSocket;
     rooms: string[];
-}
+  }
 
 interface Room {
     id: string;
@@ -85,6 +85,7 @@ wss.on('connection', function connection(ws, request){
     console.log(parsedData);
 
     if (parsedData.type === "chat") {
+        console.log(parsedData);
         const roomId = parsedData.roomId; // Keep as string
         const message = parsedData.message;
     
@@ -95,17 +96,18 @@ wss.on('connection', function connection(ws, request){
                 userId
             }
         });
-    
-        users.forEach(user => {
-            if (user.rooms.includes(roomId)) {
-                user.ws.send(JSON.stringify({
-                    type: "chat",
-                    message,
-                    userId,
-                    roomId
-                }));
-            }
-        });
+
+        
+       users.forEach(user => {
+         if (user.rooms.includes(roomId)) {
+           user.ws.send(JSON.stringify({
+             type: "chat",
+             message,
+             userId,
+             roomId
+           }));
+         }
+       });
     }
     })
 

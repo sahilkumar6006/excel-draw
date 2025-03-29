@@ -49,12 +49,12 @@ export const createRoom = async (req: Request, res: Response, next: NextFunction
 
 
 export const getChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const roomId = req.params.roomId;
+   
     try {
-        const roomId = Number(req.params.roomId);
-        console.log(req.params.roomId);
         const messages = await prismaClient.chat.findMany({
             where: {
-                roomId: roomId.toString()
+                roomId: roomId
             },
             orderBy: {
                 id: "desc"
@@ -66,17 +66,38 @@ export const getChat = async (req: Request, res: Response, next: NextFunction): 
             messages
         })
     } catch(e) {
-        console.log(e);
-        res.json({
-            messages: []
-        })
+        console.error("Error getting chat:", e);
+        next(new Error("Failed to get chat"));
     }
+    // try {
+    //     const roomId = Number(req.params.roomId);
+    //     console.log(req.params.roomId);
+    //     const messages = await prismaClient.chat.findMany({
+    //         where: {
+    //             roomId: roomId.toString()
+    //         },
+    //         orderBy: {
+    //             id: "desc"
+    //         },
+    //         take: 1000
+    //     });
+
+    //     res.json({
+    //         messages
+    //     })
+    // } catch(e) {
+    //     console.log(e);
+    //     res.json({
+    //         messages: []
+    //     })
+    // }
 
 };
 
 
 export const getSlug = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const slug = req.params.slug;
+    console.log(slug);
 
     const room = await prismaClient.room.findUnique({
         where: {

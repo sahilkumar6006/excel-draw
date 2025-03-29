@@ -5,7 +5,7 @@ const RoomRouter: express.Router = express.Router();
 
 // Direct middleware approach
 RoomRouter.post('/create', authMiddleware, createRoom);
-RoomRouter.get('chats/:roomId',getChat)
-RoomRouter.get('room/:slug',getSlug)
+RoomRouter.get('/chats/:roomId', getChat);
+RoomRouter.get('/room/:slug',getSlug)
 
 export default RoomRouter;

@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { request } from '@/api';
-
+import { BACKENED_URL } from '@/config';
+import axios from 'axios';
 export function AuthPage({isSignin}: {
     isSignin: boolean
 }) {
@@ -10,10 +11,13 @@ export function AuthPage({isSignin}: {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("isSignin", isSignin)
+    const endpoint = isSignin ? `${BACKENED_URL}/user/sign-in` : `${BACKENED_URL}/user/sign-up`;
     e.preventDefault();
     try {
-      const endpoint = isSignin ? 'http://localhost:3002/api/v1/user/sign-in' : 'http://localhost:3002/api/v1/user/sign-up';
-      const response = await request.post(endpoint, { email, password });
+      // const response = await request.post(endpoint, { email, password });
+      console.log("endpoint", endpoint)
+      const response = await axios.post(endpoint, { email, password });
       
       if (!response.data) {
         throw new Error(`Failed to ${isSignin ? 'authenticate' : 'register'}`);
